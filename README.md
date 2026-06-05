@@ -139,6 +139,20 @@ Top-K retrieval was set to 7 to provide sufficient supporting evidence while avo
 
 ---
 
+## Cost-Efficient Development
+
+A strict budget constraint of $5 was imposed for development and testing.
+
+To comply with this requirement, the project followed an incremental development strategy:
+
+1. The RAG pipeline was initially validated on a small subset of Medium articles.
+2. Retrieval performance was evaluated before scaling to the full dataset.
+3. Chunking hyperparameters were finalized prior to large-scale embedding generation.
+4. Embeddings were generated only once for the final corpus configuration.
+5. Unnecessary re-indexing and duplicate embedding operations were avoided.
+
+The total API usage remained well below the assignment budget limit, demonstrating cost-efficient development while maintaining retrieval quality.
+
 ## Assignment Requirements Coverage
 
 The system successfully supports all required query categories defined in the assignment.

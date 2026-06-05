@@ -34,6 +34,7 @@ Rules:
 - When asked for an exact number of results, return exactly that number if the context supports it.
 - If several retrieved chunks come from the same article, treat them as one article.
 - Always ground the answer in the retrieved passages.
+- Always explain your answer using the given context, quoting or paraphrasing the relevant article passage or metadata when helpful.
 - Do not include URLs in summaries unless the user explicitly asks for them.
 `;
 

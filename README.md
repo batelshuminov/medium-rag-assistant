@@ -3,8 +3,11 @@
 ## Course Project
 
 **AI Agent Systems (00960237)**
+
 Faculty of Data and Decision Sciences
+
 Technion – Israel Institute of Technology
+
 Spring 2026
 
 ---
@@ -19,14 +22,21 @@ The application is designed to reduce hallucinations by restricting generated an
 
 ---
 
+## Live Demo
+
+https://medium-rag-assistant-nine.vercel.app/
+
+---
+
 ## System Architecture
 
 1. A user submits a natural language question.
 2. The question is converted into a vector embedding using OpenAI Embeddings.
-3. Pinecone performs similarity search over the indexed article chunks.
-4. The most relevant passages are selected and assembled into an augmented prompt.
-5. GPT generates a response based exclusively on the retrieved context.
-6. The system returns both the generated answer and the supporting sources.
+3. Pinecone performs similarity search over indexed article chunks.
+4. The most relevant passages are retrieved.
+5. Retrieved passages are assembled into an augmented prompt.
+6. GPT generates a grounded response using only the retrieved context.
+7. The system returns both the answer and the supporting sources.
 
 ---
 
@@ -37,6 +47,7 @@ The application is designed to reduce hallucinations by restricting generated an
 * OpenAI API
 * Pinecone Vector Database
 * Tailwind CSS
+* Vercel
 
 ---
 
@@ -52,31 +63,46 @@ Responses are generated only from retrieved article passages.
 
 ### Article Discovery
 
-The system can identify articles, titles, URLs, and other metadata that appear in the indexed dataset.
+The system can identify article titles, URLs, authors, and related metadata from the indexed collection.
 
 ### Summarization
 
-Users can request summaries of individual articles or article topics.
+Users can request summaries of individual articles or specific topics.
 
 ### Comparative Analysis
 
-Information retrieved from multiple articles can be compared and synthesized into a single answer.
+Information from multiple retrieved articles can be compared and synthesized into a single response.
 
-### Out-of-Scope Detection
+### Unknown-Answer Detection
 
-When the retrieved context does not contain sufficient information to answer a question, the system returns a predefined fallback response rather than generating unsupported content.
+When the retrieved context does not contain sufficient information, the system returns a predefined fallback response instead of generating unsupported content.
 
 ---
 
-## Dataset Processing
+## Dataset
 
-Articles are loaded from a CSV dataset and divided into overlapping text chunks.
+The system indexes a Medium article dataset (~50 MB) that is processed into semantic chunks and stored in Pinecone.
 
-Each chunk is embedded using OpenAI's embedding model and stored in Pinecone together with article metadata, including:
+Dataset source:
+
+[Medium Articles Dataset (Google Drive)](https://drive.google.com/file/d/1Ew_jepAilAiYHG7_TUIHpBISYlwEtQQq/view?usp=sharing&utm_source=chatgpt.com)
+
+The dataset itself is intentionally excluded from the GitHub repository because of its size.
+
+---
+
+## Dataset Processing Pipeline
+
+1. Load Medium articles from the CSV dataset.
+2. Split article text into overlapping chunks.
+3. Generate OpenAI embeddings for each chunk.
+4. Store embeddings in Pinecone together with article metadata.
+
+Stored metadata includes:
 
 * Title
-* Author(s)
 * URL
+* Author(s)
 * Tags
 * Publication timestamp
 
@@ -84,75 +110,86 @@ Each chunk is embedded using OpenAI's embedding model and stored in Pinecone tog
 
 ## Retrieval Configuration
 
-| Parameter                   | Value |
-| --------------------------- | ----- |
-| Chunk Size                  | 512   |
-| Overlap Ratio               | 20%   |
-| Retrieved Documents (Top-K) | 7     |
+| Parameter       | Value |
+| --------------- | ----- |
+| Chunk Size      | 512   |
+| Chunk Overlap   | 20%   |
+| Top-K Retrieval | 7     |
 
 ---
 
-## Environment Variables
+## Configuration
 
-The application requires the following environment variables:
+The system uses environment variables for secure access to OpenAI and Pinecone services.
 
-```env
-OPENAI_API_KEY=
-PINECONE_API_KEY=
-PINECONE_INDEX_NAME=
-```
+Required variables:
 
----
-
-## Running the Application
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Start the development server:
-
-```bash
-npm run dev
-```
-
-The application will be available at:
-
-```text
-http://localhost:3000
-```
-
----
-
-## Dataset Ingestion
-
-To load article embeddings into Pinecone:
-
-```bash
-npx tsx scripts/ingest.ts
-```
+* OPENAI_API_KEY
+* PINECONE_API_KEY
+* PINECONE_INDEX_NAME
 
 ---
 
 ## Example Queries
 
-* Summarize the main idea of an article.
-* Compare two articles discussing a common topic.
-* Find an article matching a textual description.
-* Return article titles related to a specific theme.
-* Retrieve article URLs from the dataset.
-* Answer questions based on article content.
+* Find an article about introverted writers and provide its URL.
+* Summarize a specific Medium article.
+* Compare multiple articles discussing the same topic.
+* Retrieve article titles related to a given theme.
+* Answer questions using information from the indexed dataset.
+* Return article URLs from the retrieved results.
+
+---
+
+## Example Behaviors
+
+### Article Retrieval
+
+**Question**
+
+Find an article about introverted writers and provide its URL.
+
+**Answer**
+
+A Marketing Guide for Introverts
+
+https://medium.com/the-write-brain/a-marketing-guide-for-introverted-writers-b97a1cdf427d
+
+### Grounded Summarization
+
+**Question**
+
+Summarize the article "A Marketing Guide for Introverts".
+
+**Answer**
+
+The system retrieves the article content and generates a concise summary based solely on the retrieved passages.
+
+### Unknown Question Handling
+
+**Question**
+
+What is the capital of France?
+
+**Answer**
+
+I don't know based on the provided Medium articles data.
+
+---
+
+## Repository
+
+GitHub Repository:
+
+[medium-rag-assistant repository](https://github.com/batelshuminov/medium-rag-assistant?utm_source=chatgpt.com)
 
 ---
 
 ## Author
 
-Bat-El Shuminov
+Batel Shuminov
 
-Course:
-AI Agent Systems (00960237)
+Course: AI Agent Systems (00960237)
 
 Faculty of Data and Decision Sciences
 

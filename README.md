@@ -153,6 +153,8 @@ To comply with this requirement, the project followed an incremental development
 
 The total API usage remained well below the assignment budget limit, demonstrating cost-efficient development while maintaining retrieval quality.
 
+---
+
 ## Assignment Requirements Coverage
 
 The system successfully supports all required query categories defined in the assignment.

@@ -231,7 +231,7 @@ Returns the active RAG configuration.
 
 ## Main Interface
 
-![Main Interface](docs/screenshots/main-interface.png)
+![Main Interface](docs/screenshots/main.jpg)
 
 The deployed web application allows users to submit natural-language questions about the Medium article collection.
 
@@ -239,7 +239,7 @@ The deployed web application allows users to submit natural-language questions a
 
 ## Precise Fact Retrieval
 
-![Fact Retrieval](docs/screenshots/question1.png)
+![Fact Retrieval](docs/screenshots/Question1.jpg)
 
 Example query:
 
@@ -251,7 +251,7 @@ The assistant successfully identifies a specific article and returns the corresp
 
 ## Multi-Result Topic Listing
 
-![Topic Listing](docs/screenshots/question2.png)
+![Topic Listing](docs/screenshots/Question2.jpg)
 
 Example query:
 
@@ -263,7 +263,7 @@ The assistant retrieves multiple distinct articles while avoiding duplicate chun
 
 ## Key Idea Summary Extraction
 
-![Summarization](docs/screenshots/question3.png)
+![Summarization](docs/screenshots/Question3.jpg)
 
 Example query:
 
@@ -275,7 +275,7 @@ The assistant generates a concise summary grounded entirely in retrieved article
 
 ## Recommendation with Evidence-Based Justification
 
-![Recommendation](docs/screenshots/question4.png)
+![Recommendation](docs/screenshots/Question4.jpg)
 
 Example query:
 
@@ -287,7 +287,7 @@ The assistant recommends a relevant article and justifies the recommendation usi
 
 ## Unknown Question Handling
 
-![Unknown Question](docs/screenshots/question5.png)
+![Unknown Question](docs/screenshots/Question5.jpg)
 
 Example query:
 

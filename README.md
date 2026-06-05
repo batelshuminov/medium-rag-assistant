@@ -1,24 +1,20 @@
 # Medium RAG Assistant
 
-## Course Project
+## AI Agent Systems (00960237)
 
-**AI Agent Systems (00960237)**
-
-Faculty of Data and Decision Sciences
-
-Technion – Israel Institute of Technology
-
-Spring 2026
+**Faculty of Data and Decision Sciences**
+**Technion – Israel Institute of Technology**
+**Spring 2026**
 
 ---
 
-## Overview
+## Project Overview
 
 This project implements a Retrieval-Augmented Generation (RAG) system for answering questions over a collection of Medium articles.
 
-The system combines semantic retrieval using vector embeddings with large language model generation. Relevant article passages are retrieved from a Pinecone vector database and supplied as context to the language model, allowing responses to be grounded in the underlying dataset.
+The assistant combines semantic retrieval using vector embeddings with Large Language Model (LLM) generation. User questions are converted into embeddings, relevant article passages are retrieved from Pinecone, and GPT generates answers grounded exclusively in the retrieved dataset.
 
-The application is designed to reduce hallucinations by restricting generated answers to information contained in the retrieved article passages.
+The system is specifically designed to minimize hallucinations and answer questions only from the provided Medium article corpus.
 
 ---
 
@@ -28,19 +24,45 @@ https://medium-rag-assistant-nine.vercel.app/
 
 ---
 
-## System Architecture
+## GitHub Repository
 
-1. A user submits a natural language question.
-2. The question is converted into a vector embedding using OpenAI Embeddings.
-3. Pinecone performs similarity search over indexed article chunks.
-4. The most relevant passages are retrieved.
-5. Retrieved passages are assembled into an augmented prompt.
-6. GPT generates a grounded response using only the retrieved context.
-7. The system returns both the answer and the supporting sources.
+https://github.com/batelshuminov/medium-rag-assistant
 
 ---
 
-## Technologies
+## Assignment Goal
+
+The objective of this assignment was to build a knowledgeable AI assistant specialized in Medium articles using a Retrieval-Augmented Generation (RAG) pipeline.
+
+The assistant must:
+
+* Answer questions only from the provided Medium dataset.
+* Avoid using external knowledge.
+* Retrieve relevant article passages.
+* Generate grounded answers based on retrieved context.
+* Support multiple query types defined in the assignment.
+
+---
+
+## System Architecture
+
+The system follows the standard Retrieval-Augmented Generation workflow:
+
+1. User submits a natural-language question.
+2. OpenAI Embeddings convert the question into a vector.
+3. Pinecone performs semantic similarity search.
+4. Relevant article chunks are retrieved.
+5. Retrieved passages are assembled into an augmented prompt.
+6. GPT-5 Mini generates an answer using only the retrieved context.
+7. The system returns:
+
+   * Final answer
+   * Retrieved sources
+   * Augmented prompt information
+
+---
+
+## Technologies Used
 
 * Next.js
 * TypeScript
@@ -51,149 +73,245 @@ https://medium-rag-assistant-nine.vercel.app/
 
 ---
 
-## Core Functionality
-
-### Semantic Retrieval
-
-Questions are matched against article content using vector similarity search rather than keyword matching.
-
-### Grounded Question Answering
-
-Responses are generated only from retrieved article passages.
-
-### Article Discovery
-
-The system can identify article titles, URLs, authors, and related metadata from the indexed collection.
-
-### Summarization
-
-Users can request summaries of individual articles or specific topics.
-
-### Comparative Analysis
-
-Information from multiple retrieved articles can be compared and synthesized into a single response.
-
-### Unknown-Answer Detection
-
-When the retrieved context does not contain sufficient information, the system returns a predefined fallback response instead of generating unsupported content.
-
----
-
 ## Dataset
 
-The system indexes a Medium article dataset (~50 MB) that is processed into semantic chunks and stored in Pinecone.
+The system uses a dataset of approximately 7,600 English Medium articles.
+
+Dataset schema:
+
+* title
+* text
+* url
+* authors
+* timestamp
+* tags
 
 Dataset source:
 
-[Medium Articles Dataset (Google Drive)](https://drive.google.com/file/d/1Ew_jepAilAiYHG7_TUIHpBISYlwEtQQq/view?usp=sharing&utm_source=chatgpt.com)
+https://drive.google.com/file/d/1Ew_jepAilAiYHG7_TUIHpBISYlwEtQQq/view
 
-The dataset itself is intentionally excluded from the GitHub repository because of its size.
+The dataset itself is intentionally excluded from the repository because of its size.
 
 ---
 
 ## Dataset Processing Pipeline
 
-1. Load Medium articles from the CSV dataset.
+The ingestion process performs the following steps:
+
+1. Load articles from CSV.
 2. Split article text into overlapping chunks.
-3. Generate OpenAI embeddings for each chunk.
-4. Store embeddings in Pinecone together with article metadata.
+3. Generate embeddings using OpenAI.
+4. Store vectors in Pinecone.
+5. Attach metadata to each chunk.
 
-Stored metadata includes:
+Stored metadata:
 
-* Title
+* Article Title
 * URL
-* Author(s)
+* Authors
 * Tags
-* Publication timestamp
+* Timestamp
 
 ---
 
-## Retrieval Configuration
+## RAG Hyperparameters
 
 | Parameter       | Value |
 | --------------- | ----- |
 | Chunk Size      | 512   |
-| Chunk Overlap   | 20%   |
+| Overlap Ratio   | 0.2   |
 | Top-K Retrieval | 7     |
 
----
+### Design Decisions
 
-## Configuration
+#### Chunk Size (512)
 
-The system uses environment variables for secure access to OpenAI and Pinecone services.
+A chunk size of 512 was selected to balance retrieval precision and contextual coverage.
 
-Required variables:
+#### Overlap Ratio (20%)
 
-* OPENAI_API_KEY
-* PINECONE_API_KEY
-* PINECONE_INDEX_NAME
+A 20% overlap was used to reduce information loss at chunk boundaries.
 
----
+#### Top-K (7)
 
-## Example Queries
-
-* Find an article about introverted writers and provide its URL.
-* Summarize a specific Medium article.
-* Compare multiple articles discussing the same topic.
-* Retrieve article titles related to a given theme.
-* Answer questions using information from the indexed dataset.
-* Return article URLs from the retrieved results.
+Top-K retrieval was set to 7 to provide sufficient supporting evidence while avoiding excessive context size and token consumption.
 
 ---
 
-## Example Behaviors
+## Assignment Requirements Coverage
 
-### Article Retrieval
+The system successfully supports all required query categories defined in the assignment.
 
-**Question**
-
-Find an article about introverted writers and provide its URL.
-
-**Answer**
-
-A Marketing Guide for Introverts
-
-https://medium.com/the-write-brain/a-marketing-guide-for-introverted-writers-b97a1cdf427d
-
-### Grounded Summarization
-
-**Question**
-
-Summarize the article "A Marketing Guide for Introverts".
-
-**Answer**
-
-The system retrieves the article content and generates a concise summary based solely on the retrieved passages.
-
-### Unknown Question Handling
-
-**Question**
-
-What is the capital of France?
-
-**Answer**
-
-I don't know based on the provided Medium articles data.
+| Requirement                                      | Supported |
+| ------------------------------------------------ | --------- |
+| Precise Fact Retrieval                           | ✅         |
+| Multi-Result Topic Listing                       | ✅         |
+| Key Idea Summary Extraction                      | ✅         |
+| Recommendation with Evidence-Based Justification | ✅         |
+| Grounded Question Answering                      | ✅         |
+| Unknown Answer Detection                         | ✅         |
+| Pinecone Vector Database                         | ✅         |
+| Public Vercel Deployment                         | ✅         |
+| POST /api/prompt Endpoint                        | ✅         |
+| GET /api/stats Endpoint                          | ✅         |
 
 ---
 
-## Repository
+## Core Functionality
 
-GitHub Repository:
+### Semantic Retrieval
 
-[medium-rag-assistant repository](https://github.com/batelshuminov/medium-rag-assistant?utm_source=chatgpt.com)
+Questions are matched against article content using vector similarity search instead of keyword matching.
+
+### Grounded Question Answering
+
+Answers are generated only from retrieved article passages.
+
+### Article Discovery
+
+The assistant can locate specific articles and return metadata such as titles, URLs, and authors.
+
+### Summarization
+
+The system can summarize retrieved articles using only retrieved content.
+
+### Recommendation
+
+The assistant can recommend relevant articles and justify recommendations using evidence from retrieved passages.
+
+### Unknown Answer Detection
+
+When the dataset does not contain sufficient information, the assistant responds:
+
+> I don't know based on the provided Medium articles data.
+
+This prevents unsupported or hallucinated answers.
+
+---
+
+## API Endpoints
+
+### POST /api/prompt
+
+Queries the RAG system using a natural-language question.
+
+Example:
+
+```json
+{
+  "question": "Find an article about introverted writers and provide its URL."
+}
+```
+
+Returns:
+
+```json
+{
+  "response": "...",
+  "context": [...],
+  "Augmented_prompt": {...}
+}
+```
+
+### GET /api/stats
+
+Returns the active RAG configuration.
+
+```json
+{
+  "chunk_size": 512,
+  "overlap_ratio": 0.2,
+  "top_k": 7
+}
+```
+
+---
+
+# Screenshots
+
+## Main Interface
+
+![Main Interface](docs/screenshots/main-interface.png)
+
+The deployed web application allows users to submit natural-language questions about the Medium article collection.
+
+---
+
+## Precise Fact Retrieval
+
+![Fact Retrieval](docs/screenshots/question1.png)
+
+Example query:
+
+> Find an article about introverted writers and provide its URL.
+
+The assistant successfully identifies a specific article and returns the corresponding URL.
+
+---
+
+## Multi-Result Topic Listing
+
+![Topic Listing](docs/screenshots/question2.png)
+
+Example query:
+
+> List exactly 3 articles about education. Return only the titles.
+
+The assistant retrieves multiple distinct articles while avoiding duplicate chunks from the same article.
+
+---
+
+## Key Idea Summary Extraction
+
+![Summarization](docs/screenshots/question3.png)
+
+Example query:
+
+> Summarize the article "A Marketing Guide for Introverts".
+
+The assistant generates a concise summary grounded entirely in retrieved article passages.
+
+---
+
+## Recommendation with Evidence-Based Justification
+
+![Recommendation](docs/screenshots/question4.png)
+
+Example query:
+
+> I want practical beginner-friendly advice on building habits that actually stick. Which article would you recommend and why?
+
+The assistant recommends a relevant article and justifies the recommendation using retrieved evidence.
+
+---
+
+## Unknown Question Handling
+
+![Unknown Question](docs/screenshots/question5.png)
+
+Example query:
+
+> What is the capital of France?
+
+Since the answer is not contained in the Medium dataset, the assistant correctly refuses to answer and returns the predefined fallback response.
+
+---
+
+## Deployment
+
+The application is publicly deployed on Vercel:
+
+https://medium-rag-assistant-nine.vercel.app/
 
 ---
 
 ## Author
 
-Batel Shuminov
+**Batel Shuminov**
 
-Course: AI Agent Systems (00960237)
+M.Sc. Student in Electrical and Computer Engineering
 
 Faculty of Data and Decision Sciences
-
-M.Sc. in Electrical and Computer Engineering
 
 Technion – Israel Institute of Technology
 

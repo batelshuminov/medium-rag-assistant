@@ -56,9 +56,10 @@ The system follows the standard Retrieval-Augmented Generation workflow:
 6. GPT-5 Mini generates an answer using only the retrieved context.
 7. The system returns:
 
-   * Final answer
-   * Retrieved sources
-   * Augmented prompt information
+   * Generated answer
+   * Supporting article sources
+   
+   
 
 ---
 
@@ -208,8 +209,7 @@ Returns:
 ```json
 {
   "response": "...",
-  "context": [...],
-  "Augmented_prompt": {...}
+  "sources": [...]
 }
 ```
 
